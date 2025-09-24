@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, :root { height: 100%; }
+body { @apply bg-black text-white font-sans; }
+
+/* Design tokens */
+:root {
+  --bg: #070713;
+  --surface: rgba(255,255,255,0.06);
+  --surface-2: rgba(255,255,255,0.02);
+  --border: rgba(255,255,255,0.10);
+  --border-subtle: rgba(255,255,255,0.06);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255,255,255,0.72);
+  --accent: #6CF6F0;
+}
+
+.neon-title { text-shadow: 0 0 10px rgba(57,255,20,0.25), 0 0 30px rgba(124,77,255,0.08); }
+.card { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.03); }
+.video-ui { background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.4)); }
+.control-btn { @apply px-3 py-1 rounded-md text-sm bg-white/5 border; border-color: rgba(255,255,255,0.06); }
+
+/* SEO and UX improvements */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Smooth transitions for better UX */
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Focus states for accessibility */
+.control-btn:focus {
+  outline: 2px solid #39FF14;
+  outline-offset: 2px;
+}
+
+/* Loading states */
+.loading {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Cinemalux theme additions */
+.bg-cinemalux {
+  background: radial-gradient(1200px 600px at 70% 110%, rgba(157, 0, 255, 0.15) 0%, rgba(0,0,0,0) 60%),
+              radial-gradient(1600px 800px at -10% -10%, rgba(255, 80, 0, 0.18) 0%, rgba(0,0,0,0) 60%),
+              linear-gradient(180deg, #2a0610 0%, #0b0612 45%, #070713 100%);
+}
+
+/* Spacing tokens to ensure consistent layout rhythm */
+.container-xl { @apply max-w-7xl mx-auto; }
+.page-px { @apply px-4 md:px-6 lg:px-8; }
+.page-py { @apply py-6 md:py-8 lg:py-10; }
+.section-gap { @apply space-y-6 md:space-y-8; }
+.rail-gap { @apply gap-4 md:gap-5 lg:gap-6; }
+.card-pad { @apply p-4 md:p-5 lg:p-6; }
+
+.glass-panel {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+/* Unified card overlay and hover */
+.card-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.00) 25%, rgba(0,0,0,0.45) 100%); }
+.card-hover { transition: transform .2s ease, box-shadow .2s ease, filter .2s ease; }
+.card-hover:hover { transform: translateY(-2px) scale(1.02); filter: brightness(1.03); box-shadow: 0 10px 24px rgba(0,0,0,0.45); }
+
+/* Badges */
+.badge { @apply text-xs font-semibold rounded-full px-2 py-1; background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.10); }
+.badge-accent { background: #F6E05E; color: #111; border: 0; }
+
+.pill {
+  @apply px-4 py-2 rounded-full text-sm tracking-wide bg-white/10 text-white/90 border border-white/10;
+}
+.pill:hover { box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset; }
+
+.hero-card {
+  background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.6));
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+}
+
+.hover-glow {
+  transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+}
+.hover-glow:hover { transform: translateY(-2px) scale(1.01); filter: brightness(1.05); box-shadow: 0 10px 24px rgba(0,0,0,0.45); }
+
+.play-fab {
+  @apply rounded-full;
+  background: linear-gradient(180deg, #ffdda6, #f7b76a);
+  box-shadow: 0 6px 18px rgba(247,183,106,.45);
+}
+.play-fab:hover { filter: brightness(1.05); box-shadow: 0 10px 26px rgba(247,183,106,.55); }
+
+.accent-cyan { color: #6CF6F0; }
+.bar-cyan { background: #6CF6F0; }
+
+/* Generic UI states */
+.state-loading { @apply text-white/60; }
+.state-error { @apply text-red-400; }
+.state-empty { @apply text-white/60; }
+
+/* Focus visibility */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Skeletons */
+.skeleton-card { @apply rounded-2xl overflow-hidden bg-white/5 border border-white/10; position: relative; }
+.skeleton-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); transform: translateX(-100%); animation: skeleton 1.2s infinite; }
+@keyframes skeleton { 100% { transform: translateX(100%); } }
+
+/* Unified select dropdown styling */
+.select {
+  @apply h-11 rounded-xl bg-white/10 border border-white/20 px-3 text-white/90 text-sm shadow-[inset_0_0_0_1px_rgba(255,255,255,.05)] focus:outline-none focus:ring-2 focus:ring-blue-400/40 hover:bg-white/15;
+  appearance: none;
+}
+.select:focus { outline: none; }
+.select option { background-color: #0b0612; color: #ffffff; }
+.select optgroup { background-color: #0b0612; color: #ffffff; }
+
+/* Enhanced aspect ratio handling for content cards */
+.aspect-16-9 { aspect-ratio: 16 / 9; }
+.aspect-2-3 { aspect-ratio: 2 / 3; }
+
+/* Image optimization for different aspect ratios */
+.image-fit-cover { object-fit: cover; object-position: center; }
+.image-fit-contain { object-fit: contain; object-position: center; }
+.image-fit-fill { object-fit: fill; object-position: center; }
+
+/* Smooth image loading transitions */
+.image-loading {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.image-loaded {
+  opacity: 1;
+}
+
+/* Content card specific styles */
+.content-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.content-card:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Fallback for broken images */
+.image-fallback {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+

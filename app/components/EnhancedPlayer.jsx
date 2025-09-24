@@ -1,0 +1,279 @@
+'use client'
+import React, { useRef, useEffect, useState, forwardRef } from 'react'
+import Hls from 'hls.js'
+import ProgressTracker from './ProgressTracker'
+
+const EnhancedPlayer = forwardRef(({ 
+  src, 
+  subtitles = [], 
+  seriesInfo = null, 
+  initialEpisodeIndex = 0,
+  contentId,
+  type,
+  season,
+  episode,
+  title,
+  poster,
+  embedUrl
+}, ref) => {
+  const videoRef = useRef(null)
+  const hlsRef = useRef(null)
+  const containerRef = useRef(null)
+  const [playing, setPlaying] = useState(false)
+  const [currentSub, setCurrentSub] = useState(subtitles?.[0]?.lang || 'none')
+  const [error, setError] = useState(null)
+  const [episodeIndex, setEpisodeIndex] = useState(initialEpisodeIndex)
+
+  // Expose video ref to parent
+  React.useImperativeHandle(ref, () => ({
+    getVideoRef: () => videoRef.current
+  }))
+
+  // If embedUrl is provided (e.g., YouTube), render iframe instead of HLS
+  const isEmbed = Boolean(embedUrl)
+
+  // load video via HLS.js for HLS playback on all browsers
+  useEffect(() => {
+    if(isEmbed) return
+    if(!src){
+      setError('No video source available')
+      return
+    }
+    const video = videoRef.current
+    if(!video) return
+    // reset error on new src
+    setError(null)
+    if(hlsRef.current){ hlsRef.current.destroy(); hlsRef.current = null }
+
+    if(Hls.isSupported()){
+      const hls = new Hls({ capLevelToPlayerSize: true, enableWorker: true, lowLatencyMode: true })
+      hlsRef.current = hls
+      hls.attachMedia(video)
+      hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+        hls.loadSource(src)
+      })
+      hls.on(Hls.Events.MANIFEST_PARSED, async () => {
+        // Try to auto-play, but handle browser autoplay policy gracefully
+        try {
+          await video.play()
+          setPlaying(true)
+        } catch (err) {
+          // Autoplay blocked - user needs to click to start
+          console.log('Autoplay blocked, waiting for user interaction')
+        }
+      })
+      hls.on(Hls.Events.ERROR, (e, data) => {
+        console.error('HLS error', e, data)
+        if(!data?.fatal){
+          // Non-fatal errors should not show a blocking message
+          return
+        }
+        // Fatal errors: attempt graceful recovery
+        switch (data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            try { hls.startLoad() } catch(_) {}
+            break
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            try { hls.recoverMediaError() } catch(_) {}
+            break
+          default:
+            try {
+              hls.destroy()
+              const nhls = new Hls({ capLevelToPlayerSize: true, enableWorker: true, lowLatencyMode: true })
+              hlsRef.current = nhls
+              nhls.attachMedia(video)
+              nhls.on(Hls.Events.MEDIA_ATTACHED, () => nhls.loadSource(src))
+            } catch(_) {
+              setError('Playback error — try again')
+            }
+        }
+      })
+    } else {
+      // fallback to native
+      video.src = src
+    }
+
+    // cleanup
+    return () => {
+      if(hlsRef.current){ hlsRef.current.destroy(); hlsRef.current = null }
+    }
+  }, [src, isEmbed])
+
+  // handle subtitles tracks — we will add <track> elements dynamically to avoid page reload
+  useEffect(() => {
+    const video = videoRef.current
+    if(!video) return
+
+    // remove existing tracks
+    const existing = Array.from(video.querySelectorAll('track'))
+    existing.forEach(t => t.remove())
+
+    subtitles.forEach(sub => {
+      const track = document.createElement('track')
+      track.kind = 'subtitles'
+      track.label = sub.label
+      track.srclang = sub.lang
+      track.src = sub.src
+      track.default = sub.lang === currentSub
+      video.appendChild(track)
+    })
+
+    // set currentSub active
+    setTimeout(() => {
+      const tracks = video.textTracks
+      for(let i=0;i<tracks.length;i++){
+        tracks[i].mode = (tracks[i].language === currentSub) ? 'showing' : 'disabled'
+      }
+    }, 200)
+
+  }, [subtitles, currentSub])
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e) =>{
+      if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return
+      if(e.key === ' '){ e.preventDefault(); togglePlay() }
+      if(e.key === 'ArrowRight'){ seek(10) }
+      if(e.key === 'ArrowLeft'){ seek(-10) }
+      if(e.key.toLowerCase() === 'f'){ toggleFullscreen() }
+      if(e.key === 'n' && seriesInfo){ goNextEpisode() }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  })
+
+  const togglePlay = async () => {
+    const v = videoRef.current
+    try{
+      if(v.paused) await v.play()
+      else v.pause()
+      setPlaying(!v.paused)
+    } catch(err){ setError('Playback blocked by browser — tap to start') }
+  }
+
+  const seek = (sec) => {
+    const v = videoRef.current
+    v.currentTime = Math.max(0, Math.min(v.duration || 0, v.currentTime + sec))
+  }
+
+  const isFullscreen = () => {
+    return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement
+  }
+
+  const requestFs = (el) => {
+    if(el.requestFullscreen) return el.requestFullscreen()
+    if(el.webkitRequestFullscreen) return el.webkitRequestFullscreen()
+    if(el.msRequestFullscreen) return el.msRequestFullscreen()
+  }
+
+  const exitFs = () => {
+    if(document.exitFullscreen) return document.exitFullscreen()
+    if(document.webkitExitFullscreen) return document.webkitExitFullscreen()
+    if(document.msExitFullscreen) return document.msExitFullscreen()
+  }
+
+  const toggleFullscreen = () => {
+    const container = containerRef.current
+    if(!container) return
+    if(!isFullscreen()) requestFs(container)
+    else exitFs()
+  }
+
+  const changeSubtitle = (lang) => {
+    setCurrentSub(lang)
+    const v = videoRef.current
+    const tracks = v.textTracks
+    for(let i=0;i<tracks.length;i++){
+      tracks[i].mode = (tracks[i].language === lang) ? 'showing' : 'disabled'
+    }
+  }
+
+  const goNextEpisode = () => {
+    if(!seriesInfo) return
+    const eps = seriesInfo.episodes
+    const nextIndex = Math.min(eps.length - 1, episodeIndex + 1)
+    if(nextIndex === episodeIndex) return
+    const next = eps[nextIndex]
+
+    // replace src — Hls.js instance will be recreated by effect when `src` prop of parent changes
+    // Here we manually change current src while staying on same page by updating location.
+    // For demo: reload by setting video.src and re-attach HLS
+    window.location.href = `/watch/series/${seriesInfo.item.id}/${seriesInfo.season.season}/${next.id}`
+  }
+
+  return (
+    <div>
+      <div ref={containerRef} className="relative video-ui rounded overflow-hidden">
+        {!isEmbed && (
+        <video 
+          ref={videoRef} 
+          controls={false} 
+          className="w-full h-[520px] bg-black" 
+          playsInline 
+          onClick={togglePlay} 
+        />)}
+        {isEmbed && (
+          <iframe
+            className="w-full h-[520px] bg-black"
+            src={embedUrl}
+            title={title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
+        )}
+
+        {/* Progress Tracker */}
+        {!isEmbed && (<ProgressTracker
+          contentId={contentId}
+          type={type}
+          season={season}
+          episode={episode}
+          title={title}
+          poster={poster}
+          videoRef={videoRef}
+        />)}
+
+        {/* Controls overlay */}
+        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <button className="control-btn" onClick={() => seek(-10)} title="Rewind 10s" aria-label="Rewind 10 seconds">⏪ 10s</button>
+            <button className="control-btn" onClick={togglePlay} title={playing ? 'Pause' : 'Play'} aria-label={playing ? 'Pause' : 'Play'}>{playing ? '⏸' : '⏵'}</button>
+            <button className="control-btn" onClick={() => seek(10)} title="Forward 10s" aria-label="Forward 10 seconds">10s ⏩</button>
+          </div>
+
+          {!isEmbed && (<div className="flex items-center gap-2">
+            <label className="text-sm opacity-80">Subtitles</label>
+            <select className="select pl-3 pr-10" value={currentSub} onChange={(e)=>changeSubtitle(e.target.value)}>
+              <option value="none">Off</option>
+              {subtitles.map(s => <option key={s.lang} value={s.lang}>{s.label}</option>)}
+            </select>
+
+            {seriesInfo && (
+              <button className="control-btn" onClick={goNextEpisode} title="Next Episode" aria-label="Next Episode">Next ▶</button>
+            )}
+            <button className="control-btn" onClick={toggleFullscreen} title="Fullscreen" aria-label="Fullscreen">⛶</button>
+          </div>)}
+        </div>
+
+        {!isEmbed && error && <div className="absolute top-4 left-4 bg-red-600/80 p-2 rounded">{error}</div>}
+        
+        {/* Large play button overlay when not playing */}
+        {!isEmbed && !playing && !error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+            <button 
+              onClick={togglePlay}
+              className="w-20 h-20 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white text-4xl transition-all hover:scale-110"
+            >
+              ▶
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="mt-3 text-sm opacity-80">Tip: Press Space to toggle play, ← / → for 10s seek, 'n' for next episode (if available).</div>
+    </div>
+  )
+})
+
+EnhancedPlayer.displayName = 'EnhancedPlayer'
+
+export default EnhancedPlayer
