@@ -4,8 +4,8 @@ export const revalidate = 0
 import Content from '@/app/models/Content'
 
 const MONGO_URI = process.env.MONGO_URI 
-let cached = global._neonflix_mongoose
-if(!cached){ cached = global._neonflix_mongoose = { conn: null, promise: null } }
+let cached = global._dramadrift_mongoose
+if(!cached){ cached = global._dramadrift_mongoose = { conn: null, promise: null } }
 
 async function db(){
   if(cached.conn) return cached.conn
@@ -16,7 +16,7 @@ async function db(){
 
 export default async function sitemap(){
   await db()
-  const base = 'https://neonflix.com'
+  const base = 'https://dramadrift.vercel.app'
   const items = []
   
   // Add home page

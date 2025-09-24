@@ -7,23 +7,23 @@ export async function generateMetadata({ params }){
   
   if (!item) {
     return {
-      title: 'Movie Not Found — NeonFlix',
-      description: 'The requested movie or series could not be found on NeonFlix.'
+      title: 'Movie Not Found — DramaDrift',
+      description: 'The requested movie or series could not be found on DramaDrift.'
     }
   }
 
-  const title = `${item.title} (${item.year || new Date().getFullYear()}) - Watch Online Free | NeonFlix`
-  const description = `${item.description} Watch ${item.title} online free in HD quality. Stream now on NeonFlix.`
+  const title = `${item.title} (${item.year || new Date().getFullYear()}) - Watch Online Free | DramaDrift`
+  const description = `${item.description} Watch ${item.title} online free in HD quality. Stream now on DramaDrift.`
   
   return {
     title,
     description,
-    keywords: `${item.title}, watch online, free streaming, ${item.type}, NeonFlix`,
+    keywords: `${item.title}, watch online, free streaming, ${item.type}, DramaDrift`,
     openGraph: {
       title,
       description,
       type: 'video.movie',
-      url: `https://neonflix.com/watch/${type}/${id}`,
+      url: `https://dramadrift.vercel.app/watch/${type}/${id}`,
       images: [{ url: item.poster, width: 1200, height: 630, alt: `${item.title} poster` }]
     },
     twitter: {

@@ -13,8 +13,8 @@ export async function generateMetadata({ params }){
   
   if (!item) {
     return {
-      title: 'Movie Not Found — NeonFlix',
-      description: 'The requested movie or series could not be found on NeonFlix.'
+      title: 'Movie Not Found — DramaDrift',
+      description: 'The requested movie or series could not be found on DramaDrift.'
     }
   }
 
@@ -26,20 +26,20 @@ export async function generateMetadata({ params }){
   const baseTitle = item.title
   const yearPart = item.year || new Date().getFullYear()
   const episodePart = (isEpisodic && seasonObj && episodeObj) ? ` — Season ${seasonObj.season} Episode ${episodeObj.title ? '' : episode} ${episodeObj.title ? `“${episodeObj.title}”` : ''}`.trim() : ''
-  const title = `${baseTitle}${episodePart ? episodePart : ` (${yearPart})`} - Watch Online Free | NeonFlix`
-  const description = `${(episodeObj?.description || item.description) || ''} Watch ${baseTitle}${episodePart ? episodePart.replace(' — ', ' ') : ''} online free in HD on NeonFlix.`.trim()
+  const title = `${baseTitle}${episodePart ? episodePart : ` (${yearPart})`} - Watch Online Free | DramaDrift`
+  const description = `${(episodeObj?.description || item.description) || ''} Watch ${baseTitle}${episodePart ? episodePart.replace(' — ', ' ') : ''} online free in HD on DramaDrift.`.trim()
   
   return {
     title,
     description,
-    keywords: `${item.title}, watch online, free streaming, ${item.type}, NeonFlix, HD quality`,
+    keywords: `${item.title}, watch online, free streaming, ${item.type}, DramaDrift, HD quality`,
     openGraph: {
       title,
       description,
       type: 'video.movie',
       url: isEpisodic && season && episode
-        ? `https://neonflix.com/watch/${type}/${item.slug || id}/${season}/${episode}`
-        : `https://neonflix.com/watch/${type}/${item.slug || id}`,
+        ? `https://dramadrift.vercel.app/watch/${type}/${item.slug || id}/${season}/${episode}`
+        : `https://dramadrift.vercel.app/watch/${type}/${item.slug || id}`,
       images: [
         {
           url: item.poster,
@@ -57,8 +57,8 @@ export async function generateMetadata({ params }){
     },
     alternates: {
       canonical: isEpisodic && season && episode
-        ? `https://neonflix.com/watch/${type}/${item.slug || id}/${season}/${episode}`
-        : `https://neonflix.com/watch/${type}/${item.slug || id}`
+        ? `https://dramadrift.vercel.app/watch/${type}/${item.slug || id}/${season}/${episode}`
+        : `https://dramadrift.vercel.app/watch/${type}/${item.slug || id}`
     }
   }
 }
@@ -102,8 +102,8 @@ export default async function WatchPage({ params }){
         partOfSeries: { '@type': 'TVSeries', name: item.title }
       },
       episodeNumber: episode,
-      url: `https://neonflix.com/watch/${type}/${item.slug || id}/${season}/${episode}`,
-      potentialAction: { '@type': 'WatchAction', target: `https://neonflix.com/watch/${type}/${item.slug || id}/${season}/${episode}` },
+      url: `https://dramadrift.vercel.app/watch/${type}/${item.slug || id}/${season}/${episode}`,
+      potentialAction: { '@type': 'WatchAction', target: `https://dramadrift.vercel.app/watch/${type}/${item.slug || id}/${season}/${episode}` },
       genre: item.genre || ['Entertainment']
     } : {
       '@context': 'https://schema.org',
@@ -111,7 +111,7 @@ export default async function WatchPage({ params }){
       name: item.title,
       description: item.description,
       image: item.poster,
-      url: `https://neonflix.com/watch/${type}/${item.slug || id}`,
+      url: `https://dramadrift.vercel.app/watch/${type}/${item.slug || id}`,
       genre: item.genre || ['Entertainment']
     }
   ) : null

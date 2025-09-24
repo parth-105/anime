@@ -7,11 +7,11 @@ export default function ShareButton({ title }){
 
   const shareData = () => {
     try{
-      const { origin, pathname, search, hash } = window.location
-      const url = `${origin}${pathname}${search}${hash}`
-      return { title: title || 'Watch on NeonFlix', url }
+      const href = typeof window !== 'undefined' ? window.location.href : ''
+      const url = href ? encodeURI(href) : ''
+      return { title: title || 'Watch on DramaDrift', url }
     }catch{
-      return { title: title || 'Watch on NeonFlix', url: '' }
+      return { title: title || 'Watch on DramaDrift', url: '' }
     }
   }
 

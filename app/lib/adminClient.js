@@ -5,7 +5,7 @@ let memoryToken = null
 export function getToken(){
   if(memoryToken) return memoryToken
   if(typeof window !== 'undefined'){
-    memoryToken = localStorage.getItem('neonflix_admin_token')
+    memoryToken = localStorage.getItem('dramadrift_admin_token') || localStorage.getItem('neonflix_admin_token')
   }
   return memoryToken
 }
@@ -13,8 +13,12 @@ export function getToken(){
 export function setToken(token){
   memoryToken = token
   if(typeof window !== 'undefined'){
-    if(token) localStorage.setItem('neonflix_admin_token', token)
-    else localStorage.removeItem('neonflix_admin_token')
+    if(token){
+      localStorage.setItem('dramadrift_admin_token', token)
+      localStorage.removeItem('neonflix_admin_token')
+    }else{
+      localStorage.removeItem('dramadrift_admin_token')
+    }
   }
 }
 

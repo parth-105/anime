@@ -1,10 +1,10 @@
 export const metadata = {
-  title: 'NeonFlix — Watch Movies, Series, Anime Online Free | HD Streaming',
-  description: 'Watch the latest movies, TV series, and anime online free in HD quality. Stream thousands of titles with subtitles and multiple audio tracks on NeonFlix.',
-  keywords: 'watch movies online, free streaming, HD movies, TV series, anime, NeonFlix, online cinema',
-  authors: [{ name: 'NeonFlix Team' }],
-  creator: 'NeonFlix',
-  publisher: 'NeonFlix',
+  title: 'DramaDrift — Watch Movies, Series, Anime Online Free | HD Streaming',
+  description: 'Watch the latest movies, TV series, and anime online free in HD quality. Stream thousands of titles with subtitles and multiple audio tracks on DramaDrift.',
+  keywords: 'watch movies online, free streaming, HD movies, TV series, anime, DramaDrift, online cinema',
+  authors: [{ name: 'DramaDrift Team' }],
+  creator: 'DramaDrift',
+  publisher: 'DramaDrift',
   robots: {
     index: true,
     follow: true,
@@ -19,31 +19,44 @@ export const metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://neonflix.com',
-    title: 'NeonFlix — Watch Movies, Series, Anime Online Free',
+    url: 'https://dramadrift.vercel.app',
+    title: 'DramaDrift — Watch Movies, Series, Anime Online Free',
     description: 'Watch the latest movies, TV series, and anime online free in HD quality. Stream thousands of titles with subtitles and multiple audio tracks.',
-    siteName: 'NeonFlix',
+    siteName: 'DramaDrift',
     images: [
       {
-        url: 'https://neonflix.com/og-image.jpg',
+        url: 'https://dramadrift.vercel.app/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'NeonFlix - Watch Movies Online Free',
+        alt: 'DramaDrift - Watch Movies Online Free',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'NeonFlix — Watch Movies, Series, Anime Online Free',
+    title: 'DramaDrift — Watch Movies, Series, Anime Online Free',
     description: 'Watch the latest movies, TV series, and anime online free in HD quality.',
-    images: ['https://neonflix.com/og-image.jpg'],
+    images: ['https://dramadrift.vercel.app/og-image.jpg'],
   },
   alternates: {
-    canonical: 'https://neonflix.com',
+    canonical: 'https://dramadrift.vercel.app',
   },
   verification: {
     google: 'your-google-verification-code',
   },
+  icons: {
+    icon: [
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon.ico' }
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+    other: [
+      { rel: 'mask-icon', url: '/safari-pinned-tab.svg', color: '#0b61ff' },
+      { rel: 'manifest', url: '/site.webmanifest' },
+      { rel: 'msapplication-config', url: '/browserconfig.xml' }
+    ]
+  }
 }
 
 import './globals.css'
@@ -59,7 +72,7 @@ export default function RootLayout({ children, modal }){
         <header className="sticky top-0 z-50 glass-panel border-b-0">
           <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <Link href="/" className="text-2xl neon-title font-bold hover:text-blue-400 transition-colors">
-              NeonFlix
+              DramaDrift
             </Link>
             
             <nav className="hidden md:flex items-center space-x-6">
@@ -93,7 +106,7 @@ export default function RootLayout({ children, modal }){
         
         <footer className="glass-panel py-8">
           <div className="max-w-7xl mx-auto px-4 text-center text-gray-400">
-            <p>&copy; 2024 NeonFlix. Watch movies, series, K-dramas, anime and more online free.</p>
+            <p>&copy; 2024 DramaDrift. Watch movies, series, K-dramas, anime and more online free.</p>
           </div>
         </footer>
       </body>

@@ -1,7 +1,7 @@
 export function GET(){
   const body = `User-agent: *
 Allow: /
-Sitemap: https://example.com/sitemap.xml`;
+Sitemap: https://dramadrift.vercel.app/sitemap.xml`;
   return new Response(body, { headers: { 'Content-Type': 'text/plain' } })
 }
 

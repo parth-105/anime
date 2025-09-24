@@ -29,7 +29,7 @@ export default function ContentCard({
       <div className={`relative ${aspectRatio} rounded-2xl overflow-hidden bg-[#0b0612] border border-white/10`}>
         <Image 
           src={item.poster} 
-          alt={`${item.title} poster - Watch online free on NeonFlix`}
+          alt={`${item.title} poster - Watch online free on DramaDrift`}
           fill
           className={`object-cover group-hover:scale-105 transition-transform duration-300 ${
             isYouTubeThumbnail ? 'object-center' : 'object-top'

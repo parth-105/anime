@@ -8,11 +8,11 @@ export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ searchParams }){
   const q = searchParams?.q || ''
-  const title = q ? `Search “${q}” — NeonFlix` : 'Search — NeonFlix'
-  const canonical = q ? `https://neonflix.com/search?q=${encodeURIComponent(q)}` : 'https://neonflix.com/search'
+  const title = q ? `Search “${q}” — DramaDrift` : 'Search — DramaDrift'
+  const canonical = q ? `https://dramadrift.vercel.app/search?q=${encodeURIComponent(q)}` : 'https://dramadrift.vercel.app/search'
   return { 
     title, 
-    description: 'Search movies and series on NeonFlix',
+    description: 'Search movies and series on DramaDrift',
     robots: { index: false },
     alternates: { canonical }
   }

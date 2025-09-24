@@ -4,8 +4,8 @@ export const revalidate = 0
 import AnalyticsEvent from '@/app/models/AnalyticsEvent'
 
 const MONGO_URI = process.env.MONGO_URI 
-let cached = global._neonflix_mongoose
-if(!cached){ cached = global._neonflix_mongoose = { conn: null, promise: null } }
+let cached = global._dramadrift_mongoose
+if(!cached){ cached = global._dramadrift_mongoose = { conn: null, promise: null } }
 
 async function db(){
   if(cached.conn) return cached.conn
