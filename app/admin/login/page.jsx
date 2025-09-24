@@ -36,7 +36,5 @@ export default function AdminLogin(){
   )
 }
 
-export const metadata = {
-  robots: { index: false }
-}
+// metadata moved to parent layout to avoid exporting from client component
 

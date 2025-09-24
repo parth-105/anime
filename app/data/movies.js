@@ -17,7 +17,7 @@ export const genres = [
   'Romance', 'Sci-Fi', 'Thriller', 'War', 'Western', 'Reality', 'Talk Show'
 ]
 
-// export const library = [
+export const library = [
 //   {
 //     id: 'm1',
 //     type: 'movie',
@@ -192,6 +192,6 @@ export const genres = [
 //       }
 //     ]
 //   }
-// ]
+]
 
 
