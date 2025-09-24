@@ -1,4 +1,6 @@
 import mongoose from 'mongoose'
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 import { headers } from 'next/headers'
 import Content from '@/app/models/Content'
 

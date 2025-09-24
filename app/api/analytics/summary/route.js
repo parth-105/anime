@@ -1,4 +1,6 @@
 import mongoose from 'mongoose'
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 import AnalyticsEvent from '@/app/models/AnalyticsEvent'
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/neonflix'
