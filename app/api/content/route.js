@@ -3,7 +3,7 @@ import Content from '@/app/models/Content'
 import sanitizeHtml from 'sanitize-html'
 import slugify from 'slugify'
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/neonflix'
+const MONGO_URI = process.env.MONGO_URI 
 let cached = global._neonflix_mongoose
 if(!cached){ cached = global._neonflix_mongoose = { conn: null, promise: null } }
 

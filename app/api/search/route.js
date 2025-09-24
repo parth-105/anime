@@ -4,7 +4,7 @@ export const revalidate = 0
 import { headers } from 'next/headers'
 import Content from '@/app/models/Content'
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/neonflix'
+const MONGO_URI = process.env.MONGO_URI 
 let cached = global._neonflix_mongoose
 if(!cached){ cached = global._neonflix_mongoose = { conn: null, promise: null } }
 
