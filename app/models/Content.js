@@ -46,6 +46,11 @@ const ContentSchema = new mongoose.Schema({
   language: String,
   sources: [SourceSchema],
   seasons: [SeasonSchema],
+  // Admin-curated trending flags
+  isTrending: { type: Boolean, default: false, index: true },
+  // Admin rank (1 is highest). Use `rank`; keep `trendingRank` for backward compat
+  rank: { type: Number, default: null, index: true },
+  trendingRank: { type: Number, default: null, index: true },
   createdAt: { type: Date, default: Date.now }
 })
 
@@ -55,6 +60,8 @@ ContentSchema.index({ type: 1, createdAt: -1 })
 ContentSchema.index({ rating: -1, createdAt: -1 })
 ContentSchema.index({ year: -1, createdAt: -1 })
 ContentSchema.index({ genre: 1 })
+ContentSchema.index({ rank: 1 })
+ContentSchema.index({ trendingRank: 1 })
 
 export default mongoose.models.Content || mongoose.model('Content', ContentSchema)
 

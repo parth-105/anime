@@ -59,7 +59,7 @@ const EnhancedPlayer = forwardRef(({
           setPlaying(true)
         } catch (err) {
           // Autoplay blocked - user needs to click to start
-          console.log('Autoplay blocked, waiting for user interaction')
+       //   console.log('Autoplay blocked, waiting for user interaction')
         }
       })
       hls.on(Hls.Events.ERROR, (e, data) => {

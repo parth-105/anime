@@ -47,7 +47,7 @@ export default function SearchClient(){
       // Debug: log client-side query comparison
       if(process.env.NODE_ENV !== 'production'){
         // eslint-disable-next-line no-console
-        console.log('[SEARCH-CLIENT] nextQuery', nextQuery, 'currentQuery', currentQuery)
+      //  console.log('[SEARCH-CLIENT] nextQuery', nextQuery, 'currentQuery', currentQuery)
       }
       if(nextQuery !== currentQuery){
         router.replace(`${pathname}?${nextQuery}`, { scroll: false })

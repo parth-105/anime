@@ -21,6 +21,7 @@ export async function GET(req){
   const type = searchParams.get('type')
   const format = searchParams.get('format')
   const genre = searchParams.get('genre')
+  const sort = searchParams.get('sort')
   const limit = Math.min(Number(searchParams.get('limit')||24), 60)
   const page = Number(searchParams.get('page')||1)
   const query = {}
@@ -28,8 +29,13 @@ export async function GET(req){
   if(format) query.format = format
   if(genre) query.genre = genre
   if(q) query.$text = { $search: q }
+  let sortSpec = { createdAt: -1 }
+  if(q){ sortSpec = { score: { $meta: 'textScore' } } }
+  else if(sort === 'rating'){ sortSpec = { rating: -1, createdAt: -1 } }
+  else if(sort === 'recent'){ sortSpec = { createdAt: -1 } }
+  else if(sort === 'year'){ sortSpec = { year: -1, createdAt: -1 } }
   const docs = await Content.find(query)
-    .sort(q ? { score: { $meta: 'textScore' } } : { createdAt: -1 })
+    .sort(sortSpec)
     .limit(limit)
     .skip((page-1)*limit)
   return Response.json(docs)

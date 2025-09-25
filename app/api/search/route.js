@@ -49,7 +49,7 @@ export async function GET(req){
   }catch{}
   await db()
   const { searchParams } = new URL(req.url)
-  console.log('[SEARCH] url', req.url)
+  //console.log('[SEARCH] url', req.url)
 
   const q = safeString(searchParams.get('q'))
   const type = safeString(searchParams.get('type'))
@@ -111,8 +111,8 @@ export async function GET(req){
   }
 
   const projection = useText ? { score: { $meta: 'textScore' } } : undefined
-  console.log('[SEARCH] params', { q, type, format, genre, yearFrom, yearTo, minRating, sort: sortParam, page, limit })
-  console.log('[SEARCH] query', JSON.stringify(query))
+  // console.log('[SEARCH] params', { q, type, format, genre, yearFrom, yearTo, minRating, sort: sortParam, page, limit })
+  // console.log('[SEARCH] query', JSON.stringify(query))
 
   let total = 0
   let results = []
@@ -178,7 +178,7 @@ export async function GET(req){
     }
   }
 
-  console.log('[SEARCH] initial total', total)
+  // console.log('[SEARCH] initial total', total)
 
   // If text search yielded zero results but q present, try a best-effort regex across key fields
   if(useText && q && total === 0){
@@ -259,7 +259,10 @@ export async function GET(req){
   }
 
   const totalPages = Math.max(1, Math.ceil(total / limit))
-  console.log('[SEARCH] final total', total, 'first ids', (results||[]).slice(0,3).map(r=>r.id))
+  if(process.env.NODE_ENV !== 'production'){
+    // eslint-disable-next-line no-console
+   // console.log('[SEARCH] final total', total, 'first ids', (results||[]).slice(0,3).map(r=>r.id))
+  }
 
   return Response.json({
     results,

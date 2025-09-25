@@ -41,8 +41,8 @@ export default async function Home(){
         </div>
 
         {/* Curated rails (lazy loaded when in view) */}
-        <ContentRail title="Trending Now" icon="🔥" query={{ sort: 'recent' }} initialLimit={12} />
-        <ContentRail title="Top Rated" icon="⭐" query={{ sort: 'rating' }} initialLimit={12} />
+        <ContentRail title="Trending Now" icon="🔥" source="trending" initialLimit={20} />
+        <ContentRail title="Top Rated" icon="⭐" query={{ sort: 'rating' }} initialLimit={20} />
         <ContentRail title="Latest Movies" icon="🎬" query={{ type: 'movie', sort: 'recent' }} initialLimit={12} />
         <ContentRail title="New Series" icon="📺" query={{ type: 'series', sort: 'recent' }} initialLimit={12} />
         <ContentRail title="Anime Picks" icon="🍥" query={{ type: 'anime', sort: 'recent' }} initialLimit={12} />

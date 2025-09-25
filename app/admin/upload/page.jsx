@@ -11,6 +11,7 @@ export default function AdminUpload(){
   const [youtubeUrl, setYoutubeUrl] = useState('')
   const [seasons, setSeasons] = useState([{ season: 1, episodes: [{ id:'', title:'', duration:'', src:'', subtitles:'' }] }])
   const [result, setResult] = useState(null)
+  const [trending, setTrending] = useState({ enabled: false, rank: 1 })
   const [err, setErr] = useState('')
 
   if(!getToken()){
@@ -54,6 +55,19 @@ export default function AdminUpload(){
       }
       const res = await createContent(content)
       setResult(res)
+      // If trending requested, set rank
+      if(trending.enabled && res?.id){
+        const token = getToken()
+        const trRes = await fetch('/api/trending', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ id: res.id, rank: trending.rank })
+        })
+        if(!trRes.ok){
+          const detail = await trRes.json().catch(()=>({}))
+          setErr(`Trending update failed: ${detail.error || trRes.statusText}`)
+        }
+      }
     }catch(ex){ setErr(ex.message) }
   }
 
@@ -112,6 +126,25 @@ export default function AdminUpload(){
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 rail-gap">
+          {/* Trending controls */}
+          <div className="glass-panel rounded-2xl card-pad">
+            <div className="flex items-center gap-3">
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={trending.enabled} onChange={e=>setTrending(prev=>({ ...prev, enabled: e.target.checked }))} />
+                <span>Mark as Trending</span>
+              </label>
+              {trending.enabled && (
+                <div className="flex items-center gap-2">
+                  <span>Rank</span>
+                  <input type="number" min={1} max={20} value={trending.rank} onChange={e=>setTrending(prev=>({ ...prev, rank: Number(e.target.value)||1 }))} className="w-20 h-10 rounded bg-white/10 border border-white/15 px-2" />
+                  <span className="text-white/60 text-sm">(1 is highest, max 20)</span>
+                </div>
+              )}
+            </div>
+            {trending.enabled && (
+              <p className="text-white/60 text-xs mt-2">If the rank is already used, existing items shift down; the 20th drops off.</p>
+            )}
+          </div>
             <input className="h-11 rounded-lg bg-white/10 border border-white/15 px-3" placeholder="Year" value={form.year} onChange={e=>setForm({...form, year:e.target.value})} />
             <input className="h-11 rounded-lg bg-white/10 border border-white/15 px-3" placeholder="Duration (sec)" value={form.duration} onChange={e=>setForm({...form, duration:e.target.value})} />
             <input className="h-11 rounded-lg bg-white/10 border border-white/15 px-3" placeholder="Rating (e.g. 8.5)" value={form.rating} onChange={e=>setForm({...form, rating:e.target.value})} />

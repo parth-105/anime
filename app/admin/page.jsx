@@ -61,6 +61,13 @@ export default function Admin(){
         <h2 className="text-xl mb-3">Site Analytics</h2>
         <AnalyticsTabs />
       </section>
+      <section className="glass-panel rounded-2xl card-pad">
+        <h2 className="text-xl mb-3">Trending Management</h2>
+        <div className="flex items-center gap-3">
+          <a href="/admin/trending" className="underline text-blue-300">Open Trending Manager</a>
+          <a href="/admin/upload" className="underline text-blue-300">Upload Content</a>
+        </div>
+      </section>
       <section>
         {/* <h2 className="text-xl mb-4">Admin — Add Title</h2>
       <form onSubmit={onSubmit} className="space-y-3">

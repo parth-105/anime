@@ -148,6 +148,19 @@ body { @apply bg-black text-white font-sans; }
   opacity: 1;
 }
 
+/* Hide scrollbars cross-browser */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Subtle horizontal edge fade for overflow containers */
+.fade-edges-x {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+}
+
+/* Spacers to prevent content under fade edges */
+.rail-fade-spacer { flex: 0 0 24px; width: 24px; }
+
 /* Content card specific styles */
 .content-card {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
