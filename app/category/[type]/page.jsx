@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { contentTypes, genres } from '@/app/data/movies'
-import { fetchContent } from '@/app/lib/contentService'
+import { fetchContent, fetchTrendingContent } from '@/app/lib/contentService'
 import CategoryContent from './CategoryContent'
 import Breadcrumbs from '@/app/components/Breadcrumbs'
 
@@ -44,7 +44,17 @@ export default async function CategoryPage({ params }) {
     return <div className="text-center py-12">Category not found</div>
   }
 
-  const content = await fetchContent({ type, limit: 24, page: 1 })
+  let content = []
+  
+  // Handle special categories
+  if (type === 'top-rated') {
+    content = await fetchContent({ sort: 'rating', limit: 24, page: 1 })
+  } else if (type === 'trending') {
+    content = await fetchTrendingContent({ limit: 24, page: 1 })
+  } else {
+    content = await fetchContent({ type, limit: 24, page: 1 })
+  }
+  
   return (
     <div className="space-y-4 bg-cinemalux">
       <div className="container-xl page-px pt-6">

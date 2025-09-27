@@ -54,19 +54,36 @@ export default function ContentRail({ title, icon, query = {}, initialLimit = 12
     return () => { cancelled = true; io.disconnect() }
   }, [query, initialLimit, hasLoadedOnce])
 
-  // Build search link for "See all" using the same query + sensible defaults
+  // Build category link for "See all" based on rail title and query
   const buildSeeAllHref = React.useMemo(() => {
+    // Map rail titles to category routes
+    const titleToCategory = {
+      'Latest Movies': '/category/movie',
+      'New Series': '/category/series', 
+      'Anime Picks': '/category/anime',
+      'Top Rated': '/category/top-rated',
+      'Trending Now': '/category/trending'
+    }
+    
+    // Check if we have a direct title match
+    if (titleToCategory[title]) {
+      return titleToCategory[title]
+    }
+    
+    // For type-specific queries, use the type category
+    if (query.type && ['movie', 'series', 'anime', 'kdrama', 'webseries', 'drama', 'documentary', 'reality', 'comedy'].includes(query.type)) {
+      return `/category/${query.type}`
+    }
+    
+    // Fallback to search for other cases
     const params = new URLSearchParams()
     Object.entries(query || {}).forEach(([k, v]) => {
       if(v !== undefined && v !== null && String(v).trim() !== ''){
         params.set(k, String(v))
       }
     })
-    // Map common rail queries to search params
-    // If a rail passed { sort: 'rating' } etc., preserve it
-    // Content rails may also include type filters
     return `/search?${params.toString()}`
-  }, [query])
+  }, [query, title])
 
   const shouldHide = hideWhenEmpty && !loading && !error && hasLoadedOnce && items.length === 0
   if(shouldHide){ return null }

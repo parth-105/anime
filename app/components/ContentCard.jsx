@@ -18,11 +18,14 @@ export default function ContentCard({
   // Use different aspect ratios based on content source
   const aspectRatio = isYouTubeThumbnail ? 'aspect-[16/9]' : 'aspect-[2/3]'
   
-  // Generate href if not provided
+  // Use provided href or generate fallback (ensure clean URLs)
   const cardHref = href || (item.type === 'movie' 
     ? `/watch/movie/${item.id}/0/0` 
     : `/watch/${item.type}/${item.id}/1/${item.seasons?.[0]?.episodes?.[0]?.id}`
   )
+  
+  // Ensure the href is clean (no query parameters)
+  const cleanHref = cardHref.split('?')[0]
 
   const cardContent = (
     <div className={`group relative card-hover ${className}`}>
@@ -99,9 +102,10 @@ export default function ContentCard({
     return cardContent
   }
 
+  // Use regular anchor tag to prevent query parameter inheritance from search pages
   return (
-    <Link href={cardHref} className="block hover-glow">
+    <a href={cleanHref} className="block hover-glow">
       {cardContent}
-    </Link>
+    </a>
   )
 }

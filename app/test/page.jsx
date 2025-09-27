@@ -124,8 +124,8 @@ export default function TestPage() {
             <li>Try subtitle switching (if available)</li>
             <li>Use keyboard shortcuts: Space (play/pause), ← → (seek), N (next episode)</li>
           </ul>
-          <p>3. Check browser console for any errors</p>
-          <p>4. Test on different browsers (Chrome, Firefox, Safari)</p>
+          {/* <p>3. Check browser console for any errors</p>
+          <p>4. Test on different browsers (Chrome, Firefox, Safari)</p> */}
         </div>
       </div>
 

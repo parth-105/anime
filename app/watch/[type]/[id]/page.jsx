@@ -1,14 +1,15 @@
-import Player from '@/app/components/Player'
+import { fetchContentById } from '@/app/lib/contentService'
 import { library } from '@/app/data/movies'
 
 export async function generateMetadata({ params }){
   const { type, id } = params
-  const item = library.find(l => l.id === id)
+  let item = await fetchContentById(id)
+  if(!item) item = library.find(l => l.id === id || l.slug === id)
   
   if (!item) {
     return {
-      title: 'Movie Not Found — DramaDrift',
-      description: 'The requested movie or series could not be found on DramaDrift.'
+      title: 'Content Not Found — DramaDrift',
+      description: 'The requested content could not be found on DramaDrift.'
     }
   }
 
@@ -35,22 +36,69 @@ export async function generateMetadata({ params }){
   }
 }
 
-export default function WatchRoot({ params }){
+export default async function WatchRoot({ params }){
   const { type, id } = params
-  let item
-  if(type === 'movie') item = library.find(l => l.id === id)
-  else item = library.find(l => l.id === id)
+  
+  // Fetch the actual content data
+  let item = await fetchContentById(id)
+  if(!item) item = library.find(l => l.id === id || l.slug === id)
   if(!item) return <div>Not found</div>
 
-  let href = `/watch/${type}/${id}`
+  // Production-level redirect logic
+  let href
+  
   if(type === 'movie'){
     href = `/watch/movie/${id}/0/0`
   } else {
-    const firstSeason = item.seasons?.[0]
-    const firstEp = firstSeason?.episodes?.[0]
-    href = `/watch/series/${id}/${firstSeason?.season}/${firstEp?.id}`
+    // For series/anime/kdrama, determine the proper route
+    const hasSeasons = item.seasons && Array.isArray(item.seasons) && item.seasons.length > 0
+    const isAnimeMovie = item.type === 'anime' && item.format === 'movie'
+    
+    if (isAnimeMovie) {
+      // Anime movies should use movie format
+      href = `/watch/movie/${id}/0/0`
+    } else if (hasSeasons) {
+      // Find the first valid season/episode
+      let foundValidRoute = false
+      for (const season of item.seasons) {
+        if (season.episodes && season.episodes.length > 0) {
+          const episode = season.episodes[0]
+          if (episode.id && episode.id !== 'undefined') {
+            href = `/watch/${type}/${id}/${season.season}/${episode.id}`
+            foundValidRoute = true
+            break
+          }
+        }
+      }
+      
+      if (!foundValidRoute) {
+        // No valid season/episode found, use default structure
+        href = `/watch/${type}/${id}/1/1`
+      }
+    } else {
+      // No seasons data, use default structure for episodic content
+      if (type === 'kdrama' || type === 'series' || type === 'anime') {
+        href = `/watch/${type}/${id}/1/1`
+      } else {
+        href = `/watch/${type}/${id}`
+      }
+    }
   }
-  return <a className="underline" href={href}>Continue to player →</a>
+  
+  // Redirect to the proper route
+  return (
+    <div className="min-h-screen bg-cinemalux flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-white mb-4">Redirecting...</h1>
+        <a className="underline text-blue-400 hover:text-blue-300" href={href}>
+          Continue to player →
+        </a>
+        <script dangerouslySetInnerHTML={{
+          __html: `window.location.href = '${href}';`
+        }} />
+      </div>
+    </div>
+  )
 }
 
 

@@ -8,7 +8,9 @@ export const contentTypes = {
   drama: { name: 'Drama', icon: '🎭', color: 'red' },
   documentary: { name: 'Documentary', icon: '📚', color: 'yellow' },
   reality: { name: 'Reality TV', icon: '📹', color: 'indigo' },
-  comedy: { name: 'Comedy', icon: '😂', color: 'lime' }
+  comedy: { name: 'Comedy', icon: '😂', color: 'lime' },
+  'top-rated': { name: 'Top Rated', icon: '⭐', color: 'gold' },
+  trending: { name: 'Trending', icon: '🔥', color: 'red' }
 }
 
 export const genres = [

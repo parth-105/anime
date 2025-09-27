@@ -59,9 +59,30 @@ export async function searchContent(params = {}){
   if(sort) search.set('sort', sort)
   search.set('limit', String(limit))
   search.set('page', String(page))
+  // Add cache-busting parameter with random component
+  search.set('_t', String(Date.now() + Math.random()))
 
-  const res = await fetch(resolveApi(`${API_BASE}/search?${search.toString()}`), { cache: 'no-store' })
-  if(!res.ok) throw new Error('Failed to search content')
+  const res = await fetch(resolveApi(`${API_BASE}/search?${search.toString()}`), { 
+    cache: 'no-store',
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    }
+  })
+  if(!res.ok) {
+    const errorText = await res.text()
+  //  console.error('[CONTENT-SERVICE] Search API error:', res.status, res.statusText, errorText)
+    throw new Error(`Failed to search content: ${res.status} ${res.statusText}`)
+  }
+  return res.json()
+}
+
+export async function fetchTrendingContent({ limit = 24, page = 1 } = {}){
+  const params = new URLSearchParams()
+  params.set('limit', String(limit))
+  params.set('page', String(page))
+  const res = await fetch(resolveApi(`${API_BASE}/trending?${params.toString()}`), { cache: 'no-store' })
+  if(!res.ok) throw new Error('Failed to load trending content')
   return res.json()
 }
 

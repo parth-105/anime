@@ -22,12 +22,30 @@ export default function CategoryContent({ type, typeInfo, initial }) {
     async function loadFirst(){
       setLoading(true); setError(null)
       try{
-        const params = new URLSearchParams()
-        params.set('type', type)
-        if(selectedGenre !== 'all') params.set('genre', selectedGenre)
-        params.set('limit', String(LIMIT))
-        params.set('page', '1')
-        const res = await fetch(`/api/content?${params.toString()}`, { cache: 'no-store' })
+        let url = ''
+        if (type === 'top-rated') {
+          const params = new URLSearchParams()
+          params.set('sort', 'rating')
+          if(selectedGenre !== 'all') params.set('genre', selectedGenre)
+          params.set('limit', String(LIMIT))
+          params.set('page', '1')
+          url = `/api/content?${params.toString()}`
+        } else if (type === 'trending') {
+          const params = new URLSearchParams()
+          if(selectedGenre !== 'all') params.set('genre', selectedGenre)
+          params.set('limit', String(LIMIT))
+          params.set('page', '1')
+          url = `/api/trending?${params.toString()}`
+        } else {
+          const params = new URLSearchParams()
+          params.set('type', type)
+          if(selectedGenre !== 'all') params.set('genre', selectedGenre)
+          params.set('limit', String(LIMIT))
+          params.set('page', '1')
+          url = `/api/content?${params.toString()}`
+        }
+        
+        const res = await fetch(url, { cache: 'no-store' })
         const data = await res.json()
         if(!cancelled){
           const list = Array.isArray(data) ? data : []
@@ -52,12 +70,30 @@ export default function CategoryContent({ type, typeInfo, initial }) {
       if(entry.isIntersecting && !loading && hasMore){
         setLoading(true); setError(null)
         try{
-          const params = new URLSearchParams()
-          params.set('type', type)
-          if(selectedGenre !== 'all') params.set('genre', selectedGenre)
-          params.set('limit', String(LIMIT))
-          params.set('page', String(page + 1))
-          const res = await fetch(`/api/content?${params.toString()}`, { cache: 'no-store' })
+          let url = ''
+          if (type === 'top-rated') {
+            const params = new URLSearchParams()
+            params.set('sort', 'rating')
+            if(selectedGenre !== 'all') params.set('genre', selectedGenre)
+            params.set('limit', String(LIMIT))
+            params.set('page', String(page + 1))
+            url = `/api/content?${params.toString()}`
+          } else if (type === 'trending') {
+            const params = new URLSearchParams()
+            if(selectedGenre !== 'all') params.set('genre', selectedGenre)
+            params.set('limit', String(LIMIT))
+            params.set('page', String(page + 1))
+            url = `/api/trending?${params.toString()}`
+          } else {
+            const params = new URLSearchParams()
+            params.set('type', type)
+            if(selectedGenre !== 'all') params.set('genre', selectedGenre)
+            params.set('limit', String(LIMIT))
+            params.set('page', String(page + 1))
+            url = `/api/content?${params.toString()}`
+          }
+          
+          const res = await fetch(url, { cache: 'no-store' })
           const data = await res.json()
           if(!cancelled){
             const next = Array.isArray(data) ? data : []
