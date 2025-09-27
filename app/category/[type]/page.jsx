@@ -59,6 +59,7 @@ export default async function CategoryPage({ params }) {
     <div className="space-y-4 bg-cinemalux">
       <div className="container-xl page-px pt-6">
         <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: typeInfo.name }]} />
+        <h1 className="text-2xl md:text-3xl font-bold mt-4">{typeInfo.name} - Watch Online Free</h1>
       </div>
       <CategoryContent type={type} typeInfo={typeInfo} initial={content} />
     </div>

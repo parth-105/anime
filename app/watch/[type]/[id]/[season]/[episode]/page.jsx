@@ -85,6 +85,7 @@ export default async function WatchPage({ params }){
     episodeObj = ep || null
     src = ep?.src
     subtitles = ep?.subtitles || []
+    embedUrl = item.embedUrl || null
     seriesInfo = { item, season: s, episodes: s?.episodes }
     episodeIndex = s && ep ? s.episodes.findIndex(e => e.id === ep.id) : 0
   }

@@ -53,6 +53,10 @@ export default async function SearchPage({ searchParams }){
   return (
     <div className="min-h-screen bg-cinemalux">
       <div className="container-xl page-px page-py section-gap">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6">
+          {q ? `Search Results for "${q}"` : 'Search Movies & Series'}
+        </h1>
+        
         <SearchClient />
 
         <div className="mt-6 text-white/70">{total} results</div>

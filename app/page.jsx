@@ -10,6 +10,9 @@ export default async function Home(){
   return (
     <div className="min-h-screen bg-cinemalux">
       <div className="container-xl page-px page-py section-gap">
+        {/* Main heading */}
+        <h1 className="sr-only">DramaDrift - Watch Movies, Series, Anime Online Free</h1>
+        
         {/* Top nav pills */}
         <div className="flex items-center gap-3 flex-wrap">
         {Object.entries(contentTypes).slice(0,5).map(([key, type]) => (

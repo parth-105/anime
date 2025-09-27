@@ -42,7 +42,7 @@ export const metadata = {
     canonical: 'https://dramadrift.vercel.app',
   },
   verification: {
-    google: 'your-google-verification-code',
+    google: 'UK_-vH7WBV1fZBLm3aNuEJrCl5DhfDA0mlJK40EACxg',
   },
   icons: {
     icon: [
